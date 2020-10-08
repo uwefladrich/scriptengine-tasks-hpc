@@ -31,7 +31,6 @@ setuptools.setup(
     url="https://github.com/uwefladrich/scriptengine-tasks-hpc",
     packages=[
         "scriptengine.tasks.hpc",
-        "tests",
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
