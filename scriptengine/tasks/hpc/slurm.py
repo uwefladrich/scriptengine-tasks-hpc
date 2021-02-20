@@ -1,4 +1,5 @@
 import os
+import sys
 import subprocess
 
 from scriptengine.tasks.base import Task
@@ -10,10 +11,11 @@ from scriptengine.exceptions import ScriptEngineStopException, \
 
 class Sbatch(Task):
 
-    _required_arguments = ('scripts', )
-
     @timed_runner
     def run(self, context):
+
+        # By default, the original command line (scripts and arguments) is used
+        scripts = None
 
         # Default is to _not_ submit a job if we are already within a batch job
         submit_from_batch_job = False
@@ -48,8 +50,11 @@ class Sbatch(Task):
         # Build the sbatch command line
         sbatch_cmd = ['sbatch']
         sbatch_cmd.extend(map(str, opt_args))
-        sbatch_cmd.append('se')
-        sbatch_cmd.extend(map(str, scripts))
+        if scripts:
+            sbatch_cmd.append('se')
+            sbatch_cmd.extend(map(str, scripts))
+        else:
+            sbatch_cmd.extend(sys.argv)
 
         self.log_debug(f'Sbatch command line: {sbatch_cmd}')
 
