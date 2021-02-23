@@ -2,8 +2,7 @@ import os
 import sys
 import subprocess
 
-from scriptengine.tasks.base import Task
-from scriptengine.tasks.base.timing import timed_runner
+from scriptengine.tasks.core import Task, timed_runner
 from scriptengine.jinja import render as j2render
 from scriptengine.exceptions import ScriptEngineStopException, \
                                     ScriptEngineTaskRunError
