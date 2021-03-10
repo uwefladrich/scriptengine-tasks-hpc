@@ -8,62 +8,61 @@ from scriptengine.exceptions import ScriptEngineStopException, \
                                     ScriptEngineTaskRunError
 
 
+_JOB_VAR = 'SLURM_JOB_NAME'
+_SUBMIT_CMD = 'sbatch'
+
+
+def is_batch_job():
+    return os.environ.get(_JOB_VAR) is not None
+
+
 class Sbatch(Task):
 
     @timed_runner
     def run(self, context):
 
-        # By default, the original command line (scripts and arguments) is used
-        scripts = None
+        # No recursive job submission by default: check if we're already in a job
+        if is_batch_job() and not self.getarg('submit_from_batch_job', default=False):
+            self.log_debug(
+                f'{self.__class__.__name__} task from within a batch '
+                'job and "submit_from_batch_job" is not set or false: '
+                'not submitting new job'
+            )
+            return
 
-        # Default is to _not_ submit a job if we are already within a batch job
-        submit_from_batch_job = False
-
-        # Get all arguments from the task description
-        # Almost all arguments are just passed to the 'sbatch' command, except
-        # for the 'scripts' and 'submit_from_batch_job', which are used here
+        # Append all opts,args that should go to the submit command to a list
         opt_args = []
         for opt, arg in self.__dict__.items():
-            if opt == 'scripts':
-                if isinstance(arg, list):
-                    scripts = [j2render(script, context) for script in arg]
-                else:
-                    scripts = [j2render(arg, context)]
-                self.log_info(f'Submit job for {scripts}')
-            elif opt == 'submit_from_batch_job':
-                submit_from_batch_job = arg
-            elif not opt.startswith('_'):
-                opt_args.append(f'--{opt}')
-                if arg:
-                    opt_args.append(j2render(arg, context))
+            if opt in ('scripts', 'submit_from_batch_job') or opt.startswith('_'):
+                continue
+            opt_args.append(f'--{opt}')
+            if arg:
+                opt_args.append(j2render(arg, context))
 
-        # Check if we are within a SLURM batch job and if we want to submit a
-        # job from within a job
-        if os.environ.get('SLURM_JOB_NAME'):
-            if not submit_from_batch_job:
-                self.log_debug('Sbatch task from within a SLURM batch job '
-                               'and "submit_from_batch_job" is not set or '
-                               'false: not submitting new job')
-                return
-
-        # Build the sbatch command line
-        sbatch_cmd = ['sbatch']
-        sbatch_cmd.extend(map(str, opt_args))
+        # Build the submit command line
+        submit_cmd = [_SUBMIT_CMD]
+        submit_cmd.extend(map(str, opt_args))
+        scripts = self.getarg('scripts', default=None)
         if scripts:
-            sbatch_cmd.append('se')
-            sbatch_cmd.extend(map(str, scripts))
+            submit_cmd.append('se')
+            submit_cmd.extend(
+                map(str, scripts if isinstance(scripts, list) else [scripts])
+            )
         else:
-            sbatch_cmd.extend(sys.argv)
+            # If no scripts were given, use the original SE command line
+            submit_cmd.extend(sys.argv)
+        self.log_debug(f'Command line for submitting job: {submit_cmd}')
 
-        self.log_debug(f'Sbatch command line: {sbatch_cmd}')
-
-        # Run sbatch command, with handling of errors
+        # Run submit command, with handling of errors
         try:
-            subprocess.run(sbatch_cmd, check=True)
+            subprocess.run(submit_cmd, check=True)
         except subprocess.CalledProcessError as e:
-            msg = f'The sbatch command returns an error: {e}'
-            self.log_error(msg)
-            raise ScriptEngineTaskRunError(e)
+            self.log_error(
+                f'Submit command returns error: {e}'
+            )
+            raise ScriptEngineTaskRunError
         else:
-            raise ScriptEngineStopException(
-                    'Sbatch task requests stop after submitting batch job')
+            self.log_info(
+                'Requesting stop after submitting batch job to SLURM'
+            )
+            raise ScriptEngineStopException
