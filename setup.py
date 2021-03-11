@@ -44,6 +44,7 @@ setuptools.setup(
     entry_points={
         'scriptengine.tasks': [
             'hpc.slurm.sbatch = scriptengine.tasks.hpc.slurm:Sbatch',
+	    'hpc.pbs.qsub = scriptengine.tasks.hpc.pbs:Qsub',
         ],
     },
 )
