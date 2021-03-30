@@ -1,3 +1,11 @@
+ScriptEngine-HPC 0.2.1
+======================
+
+Fixes
+-----
+- Fix #4: package-not-found error
+
+
 ScriptEngine-HPC 0.2.0
 ======================
 
