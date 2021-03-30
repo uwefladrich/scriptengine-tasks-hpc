@@ -1,0 +1,18 @@
+ScriptEngine-HPC 0.2.0
+======================
+
+Features
+--------
+- Fix #1: Make 'scripts' optional, use original arguments by default
+- Fix #3: Rename package and modules
+
+
+Fixes
+-----
+
+
+Internal changes
+----------------
+- Clean up and refactor Sbatch task (#2)
+- Adapt to SE entry_points task loading
+- Add Github workflow for PyPI publishing

@@ -40,7 +40,7 @@ setuptools.setup(
     ],
     python_requires='>=3.6',
     install_requires=[
-        'scriptengine>=0.7.1',
+        'scriptengine>=0.8.0',
     ],
     entry_points={
         'scriptengine.tasks': [
