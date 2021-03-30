@@ -24,7 +24,7 @@ def get_version(rel_path):
 
 
 setuptools.setup(
-    name='scriptengine-hpc',
+    name='scriptengine-tasks-hpc',
     version=get_version('scriptengine_hpc/version.py'),
     author='Uwe Fladrich',
     author_email='uwe.fladrich@protonmail.com',
