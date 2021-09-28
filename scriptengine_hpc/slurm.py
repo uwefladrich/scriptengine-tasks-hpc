@@ -58,9 +58,9 @@ class Sbatch(Task):
             self.log_debug('Submitting a hetereogeneous SLURM job with SBATCH')
             sbatch_hetjob_args = []
             for job_args in hetjob_spec:
+                if len(sbatch_hetjob_args) > 0:
+                    sbatch_hetjob_args.append(':')
                 for opt, arg in job_args.items():
-                    if len(sbatch_hetjob_args) > 0:
-                        sbatch_hetjob_args.append(':')
                     sbatch_hetjob_args.append(f'--{opt}')
                     if arg:
                         sbatch_hetjob_args.append(j2render(arg, context))

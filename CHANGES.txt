@@ -1,3 +1,11 @@
+ScriptEngine-HPC 0.3.1
+======================
+
+Fixes
+-----
+- Fix #6: support complex hetjob_specs
+
+
 ScriptEngine-HPC 0.3.0
 ======================
 
