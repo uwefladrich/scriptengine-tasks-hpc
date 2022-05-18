@@ -1,32 +1,14 @@
 import os
 from pathlib import Path
 
-_DEFAULT_LMOD_VAR = "LMOD_DIR"
+_DEFAULT_LMOD_ENVVAR = "LMOD_DIR"
 _DEFAULT_ENV_MOD_PATH = Path("/usr/share/Modules")
 
 
-def module_lmod():
-    """Returns 'module' function or None
-    Lmod implementation, see
-    https://lmod.readthedocs.io
-    https://github.com/TACC/Lmod
-    """
-    return None
-
-
-def module_environment_modules(env_mod_path=None):
-    """Returns 'module' function or None
-    Implementation for Environment modules, see
-    https://modules.readthedocs.io
-    http://modules.sourceforge.net
-    """
-    env_mod_path = Path(env_mod_path) if env_mod_path else _DEFAULT_ENV_MOD_PATH
-    if not env_mod_path.exists():
-        return None
-
+def module_from_init_file(path):
     exec_vars = dict()
     try:
-        exec((env_mod_path / "init/python.py").read_text(), exec_vars)
+        exec(path.read_text(), exec_vars)
     except FileNotFoundError as e:
         raise RuntimeError(f"Could not initialise environment modules: {e}") from None
 
@@ -36,3 +18,33 @@ def module_environment_modules(env_mod_path=None):
     raise RuntimeError(
         "Could not initialise environment modules: Initialisation script does not define 'module' function"
     )
+
+
+def module_from_lmod(lmod_path=None):
+    """Returns 'module' function or None
+    Lmod implementation, see
+    https://lmod.readthedocs.io
+    https://github.com/TACC/Lmod
+    """
+    if lmod_path:
+        lmod_path = Path(lmod_path)
+    elif _DEFAULT_LMOD_ENVVAR in os.environ:
+        lmod_path = Path(os.environ[_DEFAULT_LMOD_ENVVAR]).parent
+    else:
+        return None
+    return module_from_init_file(lmod_path / "init/env_modules_python.py")
+
+
+def module_from_environment_modules(env_mod_path=None):
+    """Returns 'module' function or None
+    Implementation for Environment modules, see
+    https://modules.readthedocs.io
+    http://modules.sourceforge.net
+    """
+    if env_mod_path:
+        env_mod_path = Path(env_mod_path)
+    elif _DEFAULT_ENV_MOD_PATH.exists():
+        env_mod_path = _DEFAULT_ENV_MOD_PATH
+    else:
+        return None
+    return module_from_init_file(env_mod_path / "init/python.py")
