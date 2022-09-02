@@ -56,37 +56,38 @@ def modfunc_from_environment_modules(env_mod_path=None):
 class Module(Task):
 
     _required_arguments = ("cmd",)
+    _module_func = None
 
     def __init__(self, arguments):
         Module.check_arguments(arguments)
         super().__init__(arguments)
-        self._mod_func = None
 
     @timed_runner
     def run(self, context):
         self.log_info("Execute module command")
 
-        init = self.getarg("init", default=None)
         cmd = self.getarg("cmd", context)
         args = self.getarg("args", default=[])
+        self.log_debug(f"Run module cmd '{cmd}' with args {args}")
 
-        self.log_debug(
-            f"Run module cmd '{cmd}' with args {args} (initialised from '{init}')"
-        )
-
-        if not self._mod_func:
-            self.log_debug("Initialising module system")
+        if not Module._module_func:
+            init = self.getarg("init", default=None)
+            self.log_debug(
+                f"Module system not yet initialised. Initialising from '{init}'"
+            )
             try:
-                mod_func = modfunc_from_lmod(init) or modfunc_from_environment_modules()
+                Module._module_func = (
+                    modfunc_from_lmod(init) or modfunc_from_environment_modules()
+                )
             except Exception as e:
                 self.log_error(f"Error initialising the module system: {e}")
                 raise ScriptEngineTaskRunError
-            if not mod_func:
+            if not Module._module_func:
                 self.log_error("Error initialising the module system")
                 raise ScriptEngineTaskRunError
 
         try:
-            mod_func(cmd, *args)
+            Module._module_func(cmd, *args)
         except Exception as e:
             self.log_error(f"Error while running module command: {e}")
             raise ScriptEngineTaskRunError
