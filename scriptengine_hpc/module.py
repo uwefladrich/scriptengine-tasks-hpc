@@ -55,7 +55,7 @@ def modfunc_from_environment_modules(env_mod_path=None):
 
 
 class Module(Task):
-
+    """hpc.module"""
     _required_arguments = ("cmd",)
     _module_func = None
 
@@ -95,7 +95,7 @@ class Module(Task):
 
 
 class ModuleLoad(Module):
-
+    """hpc.module.load"""
     _required_arguments = ("names",)
 
     def __init__(self, arguments):
