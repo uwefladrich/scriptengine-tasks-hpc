@@ -1,6 +1,9 @@
 import os
 from pathlib import Path
 
+from scriptengine.tasks.core import Task, timed_runner
+from scriptengine.exceptions import ScriptEngineTaskRunError
+
 _DEFAULT_LMOD_ENVVAR = "LMOD_DIR"
 _DEFAULT_ENV_MOD_PATH = Path("/usr/share/Modules")
 
@@ -48,3 +51,42 @@ def module_from_environment_modules(env_mod_path=None):
     else:
         return None
     return module_from_init_file(env_mod_path / "init/python.py")
+
+
+class Module(Task):
+
+    _required_arguments = ("cmd",)
+
+    def __init__(self, arguments):
+        Module.check_arguments(arguments)
+        super().__init__(arguments)
+        self._mod_func = None
+
+    @timed_runner
+    def run(self, context):
+        self.log_info("Execute module command")
+
+        init = self.getarg("init", default=None)
+        cmd = self.getarg("cmd", context)
+        args = self.getarg("args", default=[])
+
+        self.log_debug(
+            f"Run module cmd '{cmd}' with args {args} (initialised from '{init}')"
+        )
+
+        if not self._mod_func:
+            self.log_debug("Initialising module system")
+            try:
+                mod_func = module_from_lmod(init) or module_from_environment_modules()
+            except Exception as e:
+                self.log_error(f"Error initialising the module system: {e}")
+                raise ScriptEngineTaskRunError
+            if not mod_func:
+                self.log_error("Error initialising the module system")
+                raise ScriptEngineTaskRunError
+
+        try:
+            mod_func(cmd, *args)
+        except Exception as e:
+            self.log_error(f"Error while running module command: {e}")
+            raise ScriptEngineTaskRunError
