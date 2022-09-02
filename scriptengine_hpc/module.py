@@ -1,8 +1,8 @@
 import os
 from pathlib import Path
 
-from scriptengine.tasks.core import Task, timed_runner
 from scriptengine.exceptions import ScriptEngineTaskRunError
+from scriptengine.tasks.core import Task, timed_runner
 
 _DEFAULT_LMOD_ENVVAR = "LMOD_DIR"
 _DEFAULT_ENV_MOD_PATH = Path("/usr/share/Modules")
