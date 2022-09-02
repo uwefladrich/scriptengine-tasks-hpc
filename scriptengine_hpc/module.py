@@ -9,18 +9,19 @@ _DEFAULT_ENV_MOD_PATH = Path("/usr/share/Modules")
 
 
 def modfunc_from_ini_script(ini_script_path):
+    try:
+        ini_script_code = ini_script_path.read_text()
+    except FileNotFoundError as e:
+        raise RuntimeError(f"Init script not found: {e}")
     exec_globals = dict()
     try:
-        exec(ini_script_path.read_text(), exec_globals)
-    except FileNotFoundError as e:
-        raise RuntimeError(f"Could not initialise module system: {e}") from None
+        exec(ini_script_code, exec_globals)
+    except Exception as e:
+        raise RuntimeError(f"Init script error: {e}")
     try:
         return exec_globals["module"]
     except KeyError:
-        raise RuntimeError(
-            "Could not initialise module system: "
-            "Initialisation script does not define 'module' function"
-        ) from None
+        raise RuntimeError("Init script does not define 'module' function")
 
 
 def modfunc_from_lmod(lmod_path=None):
@@ -79,7 +80,7 @@ class Module(Task):
                 Module._module_func = (
                     modfunc_from_lmod(init) or modfunc_from_environment_modules()
                 )
-            except Exception as e:
+            except RuntimeError as e:
                 self.log_error(f"Error initialising the module system: {e}")
                 raise ScriptEngineTaskRunError
             if not Module._module_func:
