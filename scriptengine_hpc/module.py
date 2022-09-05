@@ -8,9 +8,9 @@ _DEFAULT_LMOD_ENVVAR = "LMOD_DIR"
 _DEFAULT_ENV_MOD_PATH = Path("/usr/share/Modules")
 
 
-def modfunc_from_ini_script(ini_script_path):
+def modfunc_from_ini_script(init_script):
     try:
-        ini_script_code = ini_script_path.read_text()
+        ini_script_code = init_script.read_text()
     except FileNotFoundError as e:
         raise RuntimeError(f"Init script not found: {e}")
     exec_globals = dict()
@@ -24,34 +24,36 @@ def modfunc_from_ini_script(ini_script_path):
         raise RuntimeError("Init script does not define 'module' function")
 
 
-def modfunc_from_lmod(lmod_path=None):
+def modfunc_from_lmod(lmod_init_script=None):
     """Returns 'module' function or None
     Lmod implementation, see
     https://lmod.readthedocs.io
     https://github.com/TACC/Lmod
     """
-    if lmod_path:
-        lmod_path = Path(lmod_path)
+    if lmod_init_script:
+        lmod_init_script = Path(lmod_init_script)
     elif _DEFAULT_LMOD_ENVVAR in os.environ:
-        lmod_path = Path(os.environ[_DEFAULT_LMOD_ENVVAR]).parent
+        lmod_init_script = (
+            Path(os.environ[_DEFAULT_LMOD_ENVVAR]).parent / "init/env_modules_python.py"
+        )
     else:
         return None
-    return modfunc_from_ini_script(lmod_path / "init/env_modules_python.py")
+    return modfunc_from_ini_script(lmod_init_script)
 
 
-def modfunc_from_environment_modules(env_mod_path=None):
+def modfunc_from_environment_modules(env_mod_init_script=None):
     """Returns 'module' function or None
     Implementation for Environment modules, see
     https://modules.readthedocs.io
     http://modules.sourceforge.net
     """
-    if env_mod_path:
-        env_mod_path = Path(env_mod_path)
+    if env_mod_init_script:
+        env_mod_init_script = Path(env_mod_init_script)
     elif _DEFAULT_ENV_MOD_PATH.exists():
-        env_mod_path = _DEFAULT_ENV_MOD_PATH
+        env_mod_init_script = _DEFAULT_ENV_MOD_PATH / "init/python.py"
     else:
         return None
-    return modfunc_from_ini_script(env_mod_path / "init/python.py")
+    return modfunc_from_ini_script(env_mod_init_script)
 
 
 class Module(Task):
@@ -78,9 +80,9 @@ class Module(Task):
                 f"Module system not yet initialised. Initialising from '{init}'"
             )
             try:
-                Module._module_func = (
-                    modfunc_from_lmod(init) or modfunc_from_environment_modules()
-                )
+                Module._module_func = modfunc_from_lmod(
+                    init
+                ) or modfunc_from_environment_modules(init)
             except RuntimeError as e:
                 self.log_error(f"Error initialising the module system: {e}")
                 raise ScriptEngineTaskRunError
