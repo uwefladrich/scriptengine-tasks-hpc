@@ -56,6 +56,7 @@ def modfunc_from_environment_modules(env_mod_path=None):
 
 class Module(Task):
     """hpc.module"""
+
     _required_arguments = ("cmd",)
     _module_func = None
 
@@ -96,10 +97,12 @@ class Module(Task):
 
 class ModuleLoad(Module):
     """hpc.module.load"""
+
     _required_arguments = ("names",)
 
     def __init__(self, arguments):
         arguments["cmd"] = "load"
         ModuleLoad.check_arguments(arguments)
-        arguments["args"] = arguments.pop("names")
+        load_args = arguments.pop("names")
+        arguments["args"] = load_args if isinstance(load_args, list) else [load_args]
         super().__init__(arguments)
