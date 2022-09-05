@@ -3,3 +3,8 @@
 .vscode
 
 .*.swp
+
+__pycache__
+*.egg-info
+
+docs/sphinx/build
