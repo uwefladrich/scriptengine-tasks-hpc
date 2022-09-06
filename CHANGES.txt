@@ -4,6 +4,7 @@ ScriptEngine-HPC x.y.z
 Features
 --------
 - Add support for modules (Environment Modules and Lmod)
+- Add documentation (Sphinx for ReadTheDocs)
 - Update Github workflows
 
 
