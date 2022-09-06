@@ -1,3 +1,11 @@
+ScriptEngine-HPC x.y.z
+======================
+
+Features
+--------
+- Add support for modules (Environment Modules and Lmod)
+
+
 ScriptEngine-HPC 0.3.1
 ======================
 
