@@ -71,11 +71,11 @@ class Module(Task):
         self.log_info("Execute module command")
 
         cmd = self.getarg("cmd", context)
-        args = self.getarg("args", default=[])
+        args = self.getarg("args", context, default=[])
         self.log_debug(f"Run module cmd '{cmd}' with args {args}")
 
         if not Module._module_func:
-            init = self.getarg("init", default=None)
+            init = self.getarg("init", context, default=None)
             self.log_debug(
                 f"Module system not yet initialised. Initialising from '{init}'"
             )

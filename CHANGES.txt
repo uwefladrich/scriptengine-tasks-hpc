@@ -1,3 +1,11 @@
+ScriptEngine-HPC 0.4.1
+======================
+
+Fixes
+-----
+- Fix missing context argument in module task
+
+
 ScriptEngine-HPC 0.4.0
 ======================
 
