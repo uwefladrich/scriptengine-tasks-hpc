@@ -45,6 +45,8 @@ setuptools.setup(
     entry_points={
         'scriptengine.tasks': [
             'hpc.slurm.sbatch = scriptengine_hpc.slurm:Sbatch',
+            'hpc.module = scriptengine_hpc.module:Module',
+            'hpc.module.load = scriptengine_hpc.module:ModuleLoad',
         ],
     },
 )
