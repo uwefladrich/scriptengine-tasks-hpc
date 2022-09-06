@@ -1,0 +1,32 @@
+name: Install from source
+on:
+  push:
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+    strategy:
+      matrix:
+        python-version: [ "3.7", "3.8", "3.9", "3.10" ]
+
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+      -
+        name: Setup Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{matrix.python-version}}
+      -
+        name: Install package + remaining PyPI dependencies
+        run: pip install .
+      -
+        name: Test run ScriptEngine
+        run: |
+          se --help
+          se --help | grep -q "hpc\.slurm\.sbatch"
+          se --help | grep -q "hpc\.module\.load"
