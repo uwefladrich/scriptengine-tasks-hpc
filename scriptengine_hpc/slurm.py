@@ -51,7 +51,7 @@ class Sbatch(Task):
 
         hetjob_spec = self.getarg("hetjob_spec", context, default=[])
         if hetjob_spec:
-            self.log_debug("Submitting a hetereogeneous SLURM job with SBATCH")
+            self.log_debug("Submiting hetereogeneous SLURM job with sbatch")
             sbatch_hetjob_args = []
             for job_args in hetjob_spec:
                 if len(sbatch_hetjob_args) > 0:
@@ -74,7 +74,7 @@ class Sbatch(Task):
         else:
             # If no scripts were given, use the original SE command line
             sbatch_cmd_line.extend(sys.argv)
-        self.log_debug(f"Command line for submitting job: {sbatch_cmd_line}")
+        self.log_debug(f"SLURM sbatch command line: {sbatch_cmd_line}")
 
         # Run sbatch command, with handling of errors
         try:
@@ -83,5 +83,5 @@ class Sbatch(Task):
             self.log_error(f"SLURM sbatch error: {e}")
             raise ScriptEngineTaskRunError
         else:
-            self.log_info("Requesting stop after submitting batch job to SLURM")
+            self.log_info("Request STOP after job submission with SLURM sbatch")
             raise ScriptEngineStopException
