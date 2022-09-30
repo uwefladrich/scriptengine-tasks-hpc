@@ -25,8 +25,8 @@ class Sbatch(Task):
 
         def is_sbatch_opt(opt):
             return opt not in (
-                "hetjob_spec",
                 "scripts",
+                "hetjob_spec",
                 "stop_after_submit",
                 "submit_from_batch_job",
             ) and not opt.startswith("_")
