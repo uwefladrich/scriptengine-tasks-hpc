@@ -16,6 +16,7 @@ usage pattern is::
         hetjob_spec: <LIST_OF_SBATCH_OPTIONS>  # optional
         submit_from_sbatch: <true | false>  # optional, default False
         stop_after_submit:  <true | false>  # optional, default True
+        set_jobid: <CONTEXT_NAME>  # optional
 
         <SBATCH_OPTIONS>  # optional
 
@@ -69,7 +70,7 @@ running, ``hpc.slurm.sbatch`` does nothing and all other tasks are run.
 Sometimes, though, it makes sense to submit a batch job even if the current
 script already runs in a batch job itself. For example, one may want to queue a
 follow-on job at the end of the script. In order to do this, one needs to set::
-    
+
     - hpc.slurm.sbatch:
         [...]
         submit_from_sbatch: true
@@ -82,6 +83,25 @@ A related switch is ``stop_after_submit``, which defaults to ``True``. If it is
 set to ``False`` the script will continue after a new SLURM job was submitted.
 If ``stop_after_submit`` is not explicitly set (or set to ``True``) the scripte
 execution will be stopped, as described above.
+
+
+Saving the SLURM JOBID
+----------------------
+
+When the job submission via SLURM sbatch succeeds, it is possible to save the
+JOBID of the new job in the ScriptEngine context. For this, the ``set_jobid``
+task argument can be set to a key for the context dictionary. If ``set_jobid``
+is not given (or set to ``False``), the JOBID is not stored in the context.
+Note that only simple context keys, no dot-separated values, are supported.
+
+Example::
+
+    - hpc.slurm.sbatch:
+        [...]
+        set_jobid: jobid
+        [...]
+    - base.echo:
+        msg: "Submitted job with ID {{jobid}}."
 
 
 SLURM Heterogeneous Job Support
