@@ -1,9 +1,10 @@
-ScriptEngine-HPC 0.x.y
+ScriptEngine-HPC 0.5.0
 ======================
 
 Features
 --------
 - Add stop_after_submit argument to hpc.slurm.sbatch
+- Add set_jobid argument to hpc.slurm.sbatch
 
 
 ScriptEngine-HPC 0.4.1

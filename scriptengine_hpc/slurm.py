@@ -2,6 +2,7 @@ import os
 import subprocess
 import sys
 
+from scriptengine.context import ContextUpdate
 from scriptengine.exceptions import ScriptEngineStopException, ScriptEngineTaskRunError
 from scriptengine.jinja import render as j2render
 from scriptengine.tasks.core import Task, timed_runner
@@ -29,6 +30,7 @@ class Sbatch(Task):
                 "hetjob_spec",
                 "stop_after_submit",
                 "submit_from_batch_job",
+                "set_jobid",
             ) and not opt.startswith("_")
 
         if in_batch_job() and not do_recursive_submit():
@@ -42,7 +44,7 @@ class Sbatch(Task):
         # Start building the sbatch command line
         sbatch_cmd_line = [_SBATCH_CMD]
 
-        sbatch_general_args = []
+        sbatch_general_args = ["--parsable"]
         for opt, arg in self.__dict__.items():
             if is_sbatch_opt(opt):
                 sbatch_general_args.append(f"--{opt}")
@@ -77,12 +79,25 @@ class Sbatch(Task):
             sbatch_cmd_line.extend(sys.argv)
         self.log_debug(f"SLURM sbatch command line: {sbatch_cmd_line}")
 
+        self.log_info("Submitting job to SLURM queue")
+
         # Run sbatch command, with handling of errors
         try:
-            subprocess.run(sbatch_cmd_line, check=True)
+            p = subprocess.run(sbatch_cmd_line, check=True, stdout=subprocess.PIPE)
         except subprocess.CalledProcessError as e:
             self.log_error(f"SLURM sbatch error: {e}")
             raise ScriptEngineTaskRunError
+
+        try:
+            jobid = int(p.stdout.decode())
+        except ValueError:
+            self.log_warning(
+                "Job submitted to SLURM queue, but JOBID could not be parsed "
+                f"from stdout: '{p.stdout.decode()}'"
+            )
+            jobid = None
+        else:
+            self.log_info(f"Job submitted to SLURM queue, JOBID is {jobid}")
 
         if self.getarg("stop_after_submit", context, default=True):
             self.log_info("Request STOP after job submission with SLURM sbatch")
@@ -91,3 +106,13 @@ class Sbatch(Task):
             self.log_info(
                 "Job submitted but no stop requested (stop_after_submit=False)"
             )
+
+        set_jobid = self.getarg("set_jobid", context, default=False)
+        if set_jobid:
+            if jobid:
+                return ContextUpdate({set_jobid: jobid})
+            else:
+                self.log_error(
+                    "Setting the JOBID was requested, but JOBID could not be parsed"
+                )
+                raise ScriptEngineTaskRunError
