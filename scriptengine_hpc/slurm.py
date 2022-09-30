@@ -25,9 +25,10 @@ class Sbatch(Task):
 
         def is_sbatch_opt(opt):
             return opt not in (
-                "scripts",
-                "submit_from_batch_job",
                 "hetjob_spec",
+                "scripts",
+                "stop_after_submit",
+                "submit_from_batch_job",
             ) and not opt.startswith("_")
 
         if in_batch_job() and not do_recursive_submit():
@@ -82,6 +83,11 @@ class Sbatch(Task):
         except subprocess.CalledProcessError as e:
             self.log_error(f"SLURM sbatch error: {e}")
             raise ScriptEngineTaskRunError
-        else:
+
+        if self.getarg("stop_after_submit", context, default=True):
             self.log_info("Request STOP after job submission with SLURM sbatch")
             raise ScriptEngineStopException
+        else:
+            self.log_info(
+                "Job submitted but no stop requested (stop_after_submit=False)"
+            )
