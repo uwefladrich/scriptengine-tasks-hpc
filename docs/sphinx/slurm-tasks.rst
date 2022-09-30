@@ -13,8 +13,9 @@ usage pattern is::
 
     - hpc.slurm.sbatch:
         scripts: <SE_SCRIPT | LIST_OF_SE_SCRIPTS>  # optional
-        submit_from_sbatch: <true | false>  # optional
         hetjob_spec: <LIST_OF_SBATCH_OPTIONS>  # optional
+        submit_from_sbatch: <true | false>  # optional, default False
+        stop_after_submit:  <true | false>  # optional, default True
 
         <SBATCH_OPTIONS>  # optional
 
@@ -76,6 +77,11 @@ follow-on job at the end of the script. In order to do this, one needs to set::
 
 If ``submit_from_sbatch`` is set to ``true`` a new job is queued, even if the
 current script is itself running in a batch job on its own.
+
+A related switch is ``stop_after_submit``, which defaults to ``True``. If it is
+set to ``False`` the script will continue after a new SLURM job was submitted.
+If ``stop_after_submit`` is not explicitly set (or set to ``True``) the scripte
+execution will be stopped, as described above.
 
 
 SLURM Heterogeneous Job Support
