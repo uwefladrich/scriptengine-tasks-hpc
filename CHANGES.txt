@@ -1,3 +1,11 @@
+Next release
+============
+
+Fixes
+-----
+- #14: Fix hpc.slurm.sbatch swallow non-true argument values
+
+
 ScriptEngine-HPC 0.5.0
 ======================
 
