@@ -5,6 +5,11 @@ Features
 --------
 - #15: Implement sbatch_command argument for hpc.slurm.sbatch
 
+Fixes
+-----
+- #13: Fix some typos in docs
+- #14: Fix hpc.slurm.sbatch swallow non-true argument values
+
 
 ScriptEngine-HPC 0.5.0
 ======================
