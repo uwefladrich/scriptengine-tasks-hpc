@@ -1,3 +1,11 @@
+Next release
+============
+
+Fixes
+-----
+- #13: Fix some typos in docs
+
+
 ScriptEngine-HPC 0.5.0
 ======================
 
