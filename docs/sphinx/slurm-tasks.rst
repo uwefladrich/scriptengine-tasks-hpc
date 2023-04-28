@@ -37,7 +37,7 @@ There are two ways to specify which scripts are run in the batch job. By default
     - base.echo:
         msg: Hello world, from batch job!
 
-is run with ``se batch.yml``, a batch job will be queued, which eventually
+is run with ``se sbatch.yml``, a batch job will be queued, which eventually
 writes "Hello world, from batch job!" to the default job logfile. Using this
 default will be the desired behavior in most use cases. However, it is possible
 to have the batch job run a different script (or scripts) and not the initiall
@@ -81,7 +81,7 @@ current script is itself running in a batch job on its own.
 
 A related switch is ``stop_after_submit``, which defaults to ``True``. If it is
 set to ``False`` the script will continue after a new SLURM job was submitted.
-If ``stop_after_submit`` is not explicitly set (or set to ``True``) the scripte
+If ``stop_after_submit`` is not explicitly set (or set to ``True``) the script
 execution will be stopped, as described above.
 
 
@@ -128,7 +128,7 @@ The ``hpc.slurm.sbatch`` task support submitting `heterogeneous SLURM jobs
 In this example, a heterogeneous job with two components is submitted to SLURM,
 the first requesting one node and the second two nodes. The ``srun`` command in
 the second task of the script starts executables on this allocated nodes while
-specifying further job characteristigs (such as the number of tasks and tasks
+specifying further job characteristics (such as the number of tasks and tasks
 per node).
 
 The ``hetjob_spec`` argument takes a list of dictionaries and passes the keys of
