@@ -1,6 +1,10 @@
 Next release
 ============
 
+Features
+--------
+- #15: Implement sbatch_command argument for hpc.slurm.sbatch
+
 Fixes
 -----
 - #13: Fix some typos in docs

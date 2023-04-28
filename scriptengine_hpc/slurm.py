@@ -31,6 +31,7 @@ class Sbatch(Task):
                 "stop_after_submit",
                 "submit_from_batch_job",
                 "set_jobid",
+                "sbatch_command",
             ) and not opt.startswith("_")
 
         if in_batch_job() and not do_recursive_submit():
@@ -42,7 +43,7 @@ class Sbatch(Task):
             return
 
         # Start building the sbatch command line
-        sbatch_cmd_line = [_SBATCH_CMD]
+        sbatch_cmd_line = [self.getarg("sbatch_command", default=_SBATCH_CMD)]
 
         sbatch_general_args = ["--parsable"]
         for opt, arg in self.__dict__.items():
