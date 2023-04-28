@@ -1,3 +1,11 @@
+Next release
+============
+
+Features
+--------
+- #15: Implement sbatch_command argument for hpc.slurm.sbatch
+
+
 ScriptEngine-HPC 0.5.0
 ======================
 
