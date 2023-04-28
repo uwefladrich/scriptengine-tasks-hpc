@@ -1,5 +1,5 @@
-Next release
-============
+ScriptEngine-HPC 0.6.0
+======================
 
 Features
 --------
