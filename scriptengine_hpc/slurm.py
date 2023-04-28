@@ -61,7 +61,7 @@ class Sbatch(Task):
                     sbatch_hetjob_args.append(":")
                 for opt, arg in job_args.items():
                     sbatch_hetjob_args.append(f"--{opt}")
-                    if arg:
+                    if arg is not None:
                         sbatch_hetjob_args.append(j2render(arg, context))
             sbatch_cmd_line.extend(map(str, sbatch_hetjob_args))
 
