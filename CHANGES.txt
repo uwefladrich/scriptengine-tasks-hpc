@@ -1,3 +1,11 @@
+Next release
+============
+
+Fixes
+-----
+- #17: Make sure that se opts/args are not consumed by sbatch
+
+
 ScriptEngine-HPC 0.6.0
 ======================
 
