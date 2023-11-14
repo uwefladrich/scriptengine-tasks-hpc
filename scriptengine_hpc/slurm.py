@@ -66,6 +66,8 @@ class Sbatch(Task):
                         sbatch_hetjob_args.append(j2render(arg, context))
             sbatch_cmd_line.extend(map(str, sbatch_hetjob_args))
 
+        sbatch_cmd_line.append("--")  # make sure further opts go to se command
+
         scripts = self.getarg("scripts", context, default=None)
         if scripts:
             sbatch_cmd_line.append("se")
