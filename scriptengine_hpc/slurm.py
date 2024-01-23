@@ -2,7 +2,7 @@ import os
 import subprocess
 import sys
 
-from scriptengine.context import ContextUpdate
+from scriptengine.context import Context
 from scriptengine.exceptions import ScriptEngineStopException, ScriptEngineTaskRunError
 from scriptengine.jinja import render as j2render
 from scriptengine.tasks.core import Task, timed_runner
@@ -113,7 +113,7 @@ class Sbatch(Task):
         set_jobid = self.getarg("set_jobid", context, default=False)
         if set_jobid:
             if jobid:
-                return ContextUpdate({set_jobid: jobid})
+                return Context({set_jobid: jobid})
             else:
                 self.log_error(
                     "Setting the JOBID was requested, but JOBID could not be parsed"

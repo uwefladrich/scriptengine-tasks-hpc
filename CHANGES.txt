@@ -1,3 +1,12 @@
+Next release
+============
+
+Features
+--------
+- #18: Adapt to new Context class in ScriptEngine
+       (needs ScriptEngine 1.0.0rc1 or later)
+
+
 ScriptEngine-HPC 0.6.1
 ======================
 
