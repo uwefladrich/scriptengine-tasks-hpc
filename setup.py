@@ -38,9 +38,9 @@ setuptools.setup(
         'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
         'Operating System :: OS Independent',
     ],
-    python_requires='>=3.6',
+    python_requires='>=3.8',
     install_requires=[
-        'scriptengine>=0.8.0',
+        'scriptengine>=1.0.0rc1',
     ],
     entry_points={
         'scriptengine.tasks': [
