@@ -10,6 +10,7 @@ Internal changes
 ----------------
 - #21: Update Python version requirements
 - #20: Switch to src layout
+- #22: Remove obsolete version.py
 
 
 ScriptEngine-HPC 0.6.1
