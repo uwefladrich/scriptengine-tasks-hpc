@@ -1,6 +1,29 @@
 [build-system]
-requires = [
-    "setuptools>=42",
-    "wheel"
-]
+requires = ["setuptools>=60", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "scriptengine-tasks-hpc"
+version = "0.6.1"
+authors = [{ name = "Uwe Fladrich", email = "uwe.fladrich@protonmail.com" }]
+description = "ScriptEngine tasks you may need on HPC systems"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Operating System :: OS Independent",
+]
+dependencies = ["scriptengine>=1.0.0rc1"]
+
+[project.optional-dependencies]
+docs = ["sphinx", "sphinx-rtd-theme"]
+
+[project.urls]
+"Homepage" = "https://github.com/uwefladrich/scriptengine-tasks-hpc"
+"Bug Tracker" = "https://github.com/uwefladrich/scriptengine-tasks-hpc/issues"
+
+[project.entry-points."scriptengine.tasks"]
+"hpc.slurm.sbatch" = "hpctasks.slurm:Sbatch"
+"hpc.module" = "hpctasks.module:Module"
+"hpc.module.load" = "hpctasks.module:ModuleLoad"
