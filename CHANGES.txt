@@ -1,3 +1,11 @@
+Next release
+============
+
+Fixes
+-----
+- #24: Fix non-string version number in Github action
+
+
 ScriptEngine-HPC 1.0.0rc1
 =========================
 
