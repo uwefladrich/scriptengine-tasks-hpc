@@ -92,7 +92,6 @@ When the job submission via SLURM sbatch succeeds, it is possible to save the
 JOBID of the new job in the ScriptEngine context. For this, the ``set_jobid``
 task argument can be set to a key for the context dictionary. If ``set_jobid``
 is not given (or set to ``False``), the JOBID is not stored in the context.
-Note that only simple context keys, no dot-separated values, are supported.
 
 Example::
 
@@ -102,6 +101,9 @@ Example::
         [...]
     - base.echo:
         msg: "Submitted job with ID {{jobid}}."
+
+.. versionadded:: 1.0
+    Nested keys (i.e. keys with dots) are allowed.
 
 
 SLURM Heterogeneous Job Support
