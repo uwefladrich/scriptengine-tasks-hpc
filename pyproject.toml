@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "scriptengine-tasks-hpc"
-version = "0.6.1"
+version = "1.0.0rc1"
 authors = [{ name = "Uwe Fladrich", email = "uwe.fladrich@protonmail.com" }]
 description = "ScriptEngine tasks you may need on HPC systems"
 readme = "README.md"
