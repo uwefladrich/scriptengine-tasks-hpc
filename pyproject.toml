@@ -14,7 +14,7 @@ classifiers = [
     "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
     "Operating System :: OS Independent",
 ]
-dependencies = ["scriptengine>=1.0.0rc1"]
+dependencies = ["scriptengine>=1.0.0"]
 
 [project.optional-dependencies]
 docs = ["sphinx", "sphinx-rtd-theme"]
