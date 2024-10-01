@@ -5,6 +5,10 @@ Fixes
 -----
 - #26: Update docs on nested keys
 
+Internal changes
+----------------
+- #29: Use se command without full path in sbatch command
+
 
 ScriptEngine-HPC 1.0.0rc2
 =========================
