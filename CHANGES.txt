@@ -1,6 +1,12 @@
 Next release
 ============
 
+...
+
+
+ScriptEngine-HPC 1.0.0
+======================
+
 Fixes
 -----
 - #26: Update docs on nested keys
